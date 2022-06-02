@@ -6,7 +6,7 @@
 
 - [principe du B-spline](#principe-du-b-spline)
  
-- [technique d'implementation](#technique-d-implementation)
+- [technique d implementation](#technique-d-implementation)
  
 - [Comparaison](#comparaison)
  
@@ -29,7 +29,27 @@ La spline de base rationnelle non uniforme ( NURBS ) est un modèle mathématiqu
 
 
 # technique d'implementation
+- # Knot()
 
+
+```c
+void knot(int n, int c, int x[])
+{
+  int nplusc,nplus2,i;
+
+  nplusc = n + c;
+  nplus2 = n + 2;
+
+  x[1] = 0;
+  for (i = 2; i <= nplusc; i++){
+  if ( (i > c) && (i < nplus2) )
+      x[i] = x[i-1] + 1;
+  else
+     x[i] = x[i-1];
+  }
+}
+
+```
 
 
 
