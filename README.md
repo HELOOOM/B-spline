@@ -275,7 +275,7 @@ void bspline(int npts, int k, int p1, float b[], float p[])
 
 
 # Comparaison
-![Sans titre](https://user-images.githubusercontent.com/53974876/171749135-2580eaf0-2173-4476-81e5-291480723f6f.png)
+![Sans titre (2)](https://user-images.githubusercontent.com/53974876/171749870-53fc718b-8dd5-4cdc-a174-e23be23415dc.png)
 
 
 
