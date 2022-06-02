@@ -6,7 +6,7 @@
 
 - [principe du B-spline](#principe-du-b-spline)
  
-- [technique d implementation](#technique-d-implementation)
+- [technique d'implementation](#technique-dimplementation)
  
 - [Comparaison](#comparaison)
  
@@ -30,7 +30,7 @@ La spline de base rationnelle non uniforme ( NURBS ) est un modèle mathématiqu
 
 # technique d'implementation
 - # Knot()
-## Knot c'est la fonction qui grnere le knot Vector contenant des valeurs qui seront prises par t selon des intervales donnes
+## Knot c'est la fonction qui genere le knot Vector contenant des valeurs qui seront prises par t selon des intervales donnes
 
 c            = order of the basis function
 
@@ -62,9 +62,9 @@ void knot(int n, int c, int x[])
 
 ```
 
-# - basis()
+- # basis()
 
-## l'implementation de lalgorithme de "cox boor" pour generer les valeurs des fonctions de base
+## l'implementation de l'algorithme de "cox boor" pour generer les valeurs des fonctions de base
  c        = order of the B-spline basis function
  
  d        = first term of the basis function recursion relation
@@ -135,10 +135,83 @@ void knot(int n, int c, int x[])
  
  
 
-# - bspline
+- # bspline()
 
-## 
+## Fonction utilisant les deux fonctions precedentes pour generer des valeurs des coordonnees des points de la courbe Bspline finale 
+b[]        = array containing the defining polygon vertices
 
+b[1] contains the x-component of the vertex
+        
+b[2] contains the y-component of the vertex
+        
+b[3] contains the z-component of the vertex
+        
+k           = order of the \bsp basis function
+
+nbasis      = array containing the basis functions for a single value of t
+
+nplusc      = number of knot values
+
+npts        = number of defining polygon vertices
+
+p[,]        = array containing the curve points
+
+ p[1] contains the x-component of the point
+        
+p[2] contains the y-component of the point
+        
+
+p[3] contains the z-component of the point
+        
+p1          = number of points to be calculated on the curve
+
+t           = parameter value 0 <= t <= 1
+
+x[]         = array containing the knot vector
+```c++
+void bspline(int npts, int k, int p1, float b[], float p[])
+{
+    int i, j, icount, jcount;
+    int i1;
+    int x[25000] = {0}; /* allows for 20 data points with basis function of order 5 */
+    int nplusc;
+    float step;
+    float t;
+    float nbasis[25000] = {0.0};
+    float temp;
+    nplusc = npts + k;
+    /*  zero and re-dimension the knot vector and the basis array */
+    /* generate the uniform open knot vector */
+    knot(npts, k, x);
+    icount = 0;
+    /*calculate the points on the bspline curve */
+    t = 0;
+    step = ((float)x[nplusc]) / ((float)(p1 - 1));
+    for (i1 = 1; i1 <= p1; i1++)
+    {
+        if ((float)x[nplusc] - t < 5e-6)
+        {
+            t = (float)x[nplusc];
+        }
+        basis(k, t, npts, x, nbasis); /* generate the basis function for this value of t */
+        for (j = 1; j <= 3; j++)
+        { /* generate a point on the curve */
+            jcount = j;
+            p[icount + j] = 0.;
+            for (i = 1; i <= npts; i++)
+            { /* Do local matrix multiplication */
+                temp = nbasis[i] * b[jcount];
+                for (int count = 0; count < 12; count++)
+                    count++;
+                p[icount + j] = p[icount + j] + temp;
+                jcount = jcount + 3;
+            }
+        }
+        icount = icount + 3;
+        t = t + step;
+    }
+}
+```
 
 # Comparaison
 
