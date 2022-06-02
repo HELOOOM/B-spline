@@ -2,11 +2,12 @@
 
 # sommaire
 
-- [introduction](#introduction)
-
-- [principe du B-spline](#principe-du-b-spline)
+ - [introduction](#introduction)
+ - [principe du B-spline](#principe-du-b-spline)
  
-- [technique d'implementation](#technique-dimplementation)
+ - [technique d'implementation](#technique-dimplementation)
+    -  [Sequentielle](#sequentielle)
+    -  [Parallele](#parallele)
  
 - [Comparaison](#comparaison)
  
@@ -29,8 +30,11 @@ La spline de base rationnelle non uniforme ( NURBS ) est un modèle mathématiqu
 
 
 # technique d'implementation
-- # Knot()
-## Knot c'est la fonction qui genere le knot Vector contenant des valeurs qui seront prises par t selon des intervales donnes
+
+
+# Sequentielle
+- # **Knot()**
+## C'est la fonction qui genere le knot Vector contenant des valeurs qui seront prises par t selon des intervales donnes
 
 c            = order of the basis function
 
@@ -62,7 +66,7 @@ void knot(int n, int c, int x[])
 
 ```
 
-- # basis()
+- # **Basis()**
 
 ## l'implementation de l'algorithme de "cox boor" pour generer les valeurs des fonctions de base
  c        = order of the B-spline basis function
@@ -135,7 +139,7 @@ void knot(int n, int c, int x[])
  
  
 
-- # bspline()
+- # **Bspline()**
 
 ## Fonction utilisant les deux fonctions precedentes pour generer des valeurs des coordonnees des points de la courbe Bspline finale 
 b[]        = array containing the defining polygon vertices
@@ -168,7 +172,7 @@ p1          = number of points to be calculated on the curve
 t           = parameter value 0 <= t <= 1
 
 x[]         = array containing the knot vector
-```c++
+```c
 void bspline(int npts, int k, int p1, float b[], float p[])
 {
     int i, j, icount, jcount;
@@ -213,7 +217,65 @@ void bspline(int npts, int k, int p1, float b[], float p[])
 }
 ```
 
+
+
+# Parallele
+
+## Creation d'un groupe de 16 threads divisant le nombre d'iterations, utilisation de la clause reduction pour accumuler les valeur de "e" et "d"; chaque thread prends i comme variable prive.
+
+```c
+
+#pragma omp parallel for private(k)
+     for (k = 2; k <= c; k++)
+     {
+#pragma omp parallel for private(i) reduction(*: d, e) num_threads(16)
+          for (i = 1; i <= nplusc - k; i++)
+          {
+
+               if (temp[i] != 0) /* if the lower order basis function is zero skip the                         calculation */
+                    d = ((t - x[i]) * temp[i]) / (x[i + k - 1] - x[i]);
+               else
+                    d = 0;
+
+               if (temp[i + 1] != 0) /* if the lower order basis function is zero skip the calculation  */
+                    e = ((x[i + k] - t) * temp[i + 1]) / (x[i + k] - x[i + 1]);
+               else
+                    e = 0;
+
+               temp[i] = d + e;
+          }
+     }
+```
+
+## Creation d'un groupe de 16 threads divisant le nombre d'iterations, utilisation de la clause reduction pour accumuler les valeur de "e" et "d"; chaque thread prends "j" et "temp" comme variable prive et sera divise a son tour  en plusieurs threads dans la deuxieme boucle.
+
+
+```c
+#pragma omp parallel for private(j, temp) num_threads(16) reduction(+: jcount)
+          for (j = 1; j <= 3; j++)
+          { /* generate a point on the curve */
+               jcount = j;
+               p[icount + j] = 0.;
+#pragma omp parallel for private(i, temp)
+               for (i = 1; i <= npts; i++)
+               { /* Do local matrix multiplication */
+                    temp = nbasis[i] * b[jcount];
+                    p[icount + j] = p[icount + j] + temp;
+                    jcount = jcount + 3;
+               }
+          }
+
+          icount = icount + 3;
+          t = t + step;
+     }
+
+
+```
+
+
+
 # Comparaison
+![Sans titre](https://user-images.githubusercontent.com/53974876/171749135-2580eaf0-2173-4476-81e5-291480723f6f.png)
 
 
 
