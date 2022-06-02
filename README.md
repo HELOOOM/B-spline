@@ -30,6 +30,17 @@ La spline de base rationnelle non uniforme ( NURBS ) est un modèle mathématiqu
 
 # technique d'implementation
 - # Knot()
+## Knot c'est la fonction qui grnere le knot Vector contenant des valeurs qui seront prises par t selon des intervales donnes
+
+c            = order of the basis function
+
+n            = the number of defining polygon vertices
+
+nplus2       = index of x() for the first occurence of the maximum knot vector value
+
+nplusc       = maximum value of the knot vector -- $n + c$
+
+x()          = array containing the knot vector
 
 
 ```c
