@@ -25,16 +25,16 @@ La spline de base rationnelle non uniforme ( NURBS ) est un modèle mathématiqu
 
 # principe du B-spline
 
-
+Malgrès que les courbes de Bézier permettent de tracer des courbes continues et  lisses à partir d'un nombre fini de points de contrôles, les résultats obtenus par la construction d'une seule courbe de Bézier étaient insatisfaisantes pour la modélisation des formes complexes (aile d'un avion , animation 3D ).L'idée est de joindre plusieurs courbes de bézier dont chacune est controllée localement par un ensemble de points de controle, par conséquence une représentation géometrique exacte . Donc la B-spline est un assemblage de plusieurs courbes de Bézier d'une manière continue.  
 
 
 
 # technique d'implementation
 
 
-# Sequentielle
-- # **Knot()**
-## C'est la fonction qui genere le knot Vector contenant des valeurs qui seront prises par t selon des intervales donnes
+   - # **Sequentielle**
+- ## **Knot()**
+### C'est la fonction qui genere le knot Vector contenant des valeurs qui seront prises par t selon des intervales donnes
 
 c            = order of the basis function
 
@@ -66,9 +66,9 @@ void knot(int n, int c, int x[])
 
 ```
 
-- # **Basis()**
+- ## **Basis()**
 
-## l'implementation de l'algorithme de "cox boor" pour generer les valeurs des fonctions de base
+### **l'implementation de l'algorithme de "cox boor" pour generer les valeurs des fonctions de base**
  c        = order of the B-spline basis function
  
  d        = first term of the basis function recursion relation
@@ -139,9 +139,9 @@ void knot(int n, int c, int x[])
  
  
 
-- # **Bspline()**
+- ## **Bspline()**
 
-## Fonction utilisant les deux fonctions precedentes pour generer des valeurs des coordonnees des points de la courbe Bspline finale 
+### **Fonction utilisant les deux fonctions precedentes pour generer des valeurs des coordonnees des points de la courbe Bspline finale**
 b[]        = array containing the defining polygon vertices
 
 b[1] contains the x-component of the vertex
@@ -219,9 +219,9 @@ void bspline(int npts, int k, int p1, float b[], float p[])
 
 
 
-# Parallele
+   - # **Parallele**
 
-## Creation d'un groupe de 16 threads divisant le nombre d'iterations, utilisation de la clause reduction pour accumuler les valeur de "e" et "d"; chaque thread prends i comme variable prive.
+## **Creation d'un groupe de 16 threads divisant le nombre d'iterations, utilisation de la clause reduction pour accumuler les valeur de "e" et "d"; chaque thread prends i comme variable prive.**
 
 ```c
 
