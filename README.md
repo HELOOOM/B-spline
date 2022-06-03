@@ -282,3 +282,11 @@ void bspline(int npts, int k, int p1, float b[], float p[])
 
 
 # performance
+- # **Sequentielle**
+
+![PERFO2](https://user-images.githubusercontent.com/53974876/171815588-c87129c1-dfc2-49f3-9304-bbdc979f4e63.png)
+
+ - # **Parallele**
+
+![PERFO1](https://user-images.githubusercontent.com/53974876/171815552-dd7e3847-ed74-4a95-87d6-e9cc068d9529.png)
+
