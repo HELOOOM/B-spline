@@ -1,4 +1,13 @@
+
 # B-spline Rationnelles Non uniformes et rendu
+
+## **BY** : 
+- [x] **Benzemroun Badr**
+- [x] **Lakhmiri Mohammed Elias**
+- [x] **Sakassa Rachid**
+
+- ## encadre par : **ZAKARIAE ABBAD**
+
 
 # sommaire
 
